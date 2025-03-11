@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #messages { border: 1px solid #ccc; height: 300px; overflow-y: scroll; }
+        #input { width: 80%; }
+    </style>
+</head>
+<body>
+
+<h1>Messenger</h1>
+<div id="messages"></div>
+<input id="input" type="text" placeholder="Type a message..." />
+<button id="send">Send</button>
+
+<script>
+    const messagesDiv = document.getElementById("messages");
+    const input = document.getElementById("input");
+    const sendButton = document.getElementById("send");
+
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.onmessage = (event) => {
+        const message = document.createElement("div");
+        message.textContent = event.data;
+        messagesDiv.appendChild(message);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+    };
+
+    sendButton.onclick = () => {
+        const message = input.value;
+        socket.send(message);
+        input.value = ""; // Очистка поля ввода
+    };
+</script>
+
+</body>
+</html>
